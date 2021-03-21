@@ -19,7 +19,7 @@ namespace ServiciosCuentaUsuario
         int idCuenta;
         string telefono;
         CuentaCompleta cuentaC;
-        
+
         public CuentaCompleta IniciarSesion(string correo, string contrasena)
         {
             cuentaC = null;
@@ -114,7 +114,7 @@ namespace ServiciosCuentaUsuario
             string telefono = "";
 
             MySqlCommand comando6 = new MySqlCommand(string.Format(
-            "Select telefono from Telefono where Cuenta_idCuenta='{0}'", salida), Conexion.ObtenerConexion());
+            "Select telefono from Telefono where Cuenta_idCuenta='{0}'", idCuenta), Conexion.ObtenerConexion());
             MySqlDataReader reader6 = comando6.ExecuteReader();
             while (reader6.Read())
             {
@@ -148,7 +148,6 @@ namespace ServiciosCuentaUsuario
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                return retorno;
             }
 
             return retorno;
@@ -186,7 +185,6 @@ namespace ServiciosCuentaUsuario
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                return retorno;
             }
 
             return retorno;
