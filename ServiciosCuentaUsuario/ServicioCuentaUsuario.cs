@@ -19,8 +19,11 @@ namespace ServiciosCuentaUsuario
         int idCuenta;
         string telefono;
         CuentaCompleta cuentaC;
+        
         public CuentaCompleta IniciarSesion(string correo, string contrasena)
         {
+            cuentaC = null;
+
             try
             {
                 MySqlCommand comando = new MySqlCommand(string.Format(
@@ -41,71 +44,105 @@ namespace ServiciosCuentaUsuario
 
                 if (salida == salida2)
                 {
-                    MySqlCommand comando3 = new MySqlCommand(string.Format(
-                    "Select idCuenta, nombreUsuario, idFotoCuentaUsuario ,Genero_idGenero from Cuenta where idCuenta='{0}'", salida), Conexion.ObtenerConexion());
-                    MySqlDataReader reader3 = comando3.ExecuteReader();
-
-                    while (reader3.Read())
-                    {
-                        cuenta = new Cuenta(reader3.GetInt32(0), reader3.GetString(1), reader3.GetInt32(2), reader3.GetInt32(3));
-                    }
-
-                    MySqlCommand comando4 = new MySqlCommand(string.Format(
-                    "Select correo from Correo where Cuenta_idCuenta='{0}'", salida), Conexion.ObtenerConexion());
-                    MySqlDataReader reader4 = comando4.ExecuteReader();
-                    while (reader4.Read())
-                    {
-                        correo = reader4.GetString(0);
-                    }
-
-                    MySqlCommand comando5 = new MySqlCommand(string.Format(
-                    "Select contrasena from Contrasena where Cuenta_idCuenta='{0}'", salida), Conexion.ObtenerConexion());
-                    MySqlDataReader reader5 = comando5.ExecuteReader();
-                    while (reader5.Read())
-                    {
-                        contrasena = reader5.GetString(0);
-                    }
-
-                    MySqlCommand comando6 = new MySqlCommand(string.Format(
-                    "Select telefono from Telefono where Cuenta_idCuenta='{0}'", salida), Conexion.ObtenerConexion());
-                    MySqlDataReader reader6 = comando6.ExecuteReader();
-                    while (reader6.Read())
-                    {
-                        telefono = reader6.GetString(0);
-                    }
-
-                    cuentaC = new CuentaCompleta(salida, cuenta.getNombreUsuario(), correo, contrasena, telefono, cuenta.getIdFotoCuentaUsuario(), cuenta.getGenero_idGenero());
-
-                    return cuentaC;
-
+                    cuentaC = ObtenerCuenta(salida);
                 }
             }
             catch(Exception e)
             {
-                return cuentaC;
+
             }
+
             return cuentaC;
         }
 
-        public int ModificarUsuario(int idCuenta, string nombreUsuario, string correo, string contrasena, string telefono, int idFotoCuentaUsuario, int Genero_idGenero)
+        public Cuenta ObtenerCuenta(int idCuenta) 
+        {
+            cuenta = null;
+            MySqlCommand comando3 = new MySqlCommand(string.Format(
+                    "Select idCuenta, nombreUsuario, idFotoCuentaUsuario ,Genero_idGenero from Cuenta where idCuenta='{0}'", idCuenta), Conexion.ObtenerConexion());
+            MySqlDataReader reader3 = comando3.ExecuteReader();
+
+            while (reader3.Read())
+            {
+                cuenta = new CuentaCompleta 
+                {
+                  IdCuenta = reader3.GetInt32(0),
+                  NombreUsuario = reader3.GetString(1),
+                  IdFotoCuentaUsuario = reader3.GetInt32(2),
+                  Genero_idGenero = reader3.GetInt32(3))
+                };
+            }
+
+            cuenta.Correo = ObtenerCorreoDeCuenta(idCuenta);
+            cuenta.Contrasena = ObtenerContrasenaDeCuenta(idCuenta);
+            cuenta.Telefono = ObtenerTelefonoDeCuenta(idCuenta);
+
+            return cuenta;
+        }
+
+        public string ObtenerCorreoDeCuenta(int idCuenta)
+        {
+            string correo = "";
+
+            MySqlCommand comando4 = new MySqlCommand(string.Format(
+            "Select correo from Correo where Cuenta_idCuenta='{0}'", idCuenta), Conexion.ObtenerConexion());
+            MySqlDataReader reader4 = comando4.ExecuteReader();
+            while (reader4.Read())
+            {
+                correo = reader4.GetString(0);
+            }
+
+            return correo;
+        }
+
+        public string ObtenerContrasenaDeCuenta(int idCuenta)
+        {
+            string contrasena = "";
+            MySqlCommand comando5 = new MySqlCommand(string.Format(
+            "Select contrasena from Contrasena where Cuenta_idCuenta='{0}'", idCuenta), Conexion.ObtenerConexion());
+            MySqlDataReader reader5 = comando5.ExecuteReader();
+            while (reader5.Read())
+            {
+                contrasena = reader5.GetString(0);
+            }
+
+            return contrasena;
+        }
+
+        public string ObtenerTelefonoDeCuenta(int idCuenta)
+        {
+            string telefono = "";
+
+            MySqlCommand comando6 = new MySqlCommand(string.Format(
+            "Select telefono from Telefono where Cuenta_idCuenta='{0}'", salida), Conexion.ObtenerConexion());
+            MySqlDataReader reader6 = comando6.ExecuteReader();
+            while (reader6.Read())
+            {
+                telefono = reader6.GetString(0);
+            }
+
+            return telefono;
+        }
+
+        public int ModificarUsuario(CuentaCompleta cuenta)
         {
             int retorno=0;
             try
             {
                 MySqlCommand comando = new MySqlCommand(string.Format(
-               "Update Cuenta set nombreUsuario='{0}', idFotoCuentaUsuario='{1}',Genero_idGenero='{2}' where idCuenta='{3}'", nombreUsuario, idFotoCuentaUsuario, Genero_idGenero, idCuenta), Conexion.ObtenerConexion());
+               "Update Cuenta set nombreUsuario='{0}', idFotoCuentaUsuario='{1}',Genero_idGenero='{2}' where idCuenta='{3}'", cuenta.NombreUsuario, cuenta.IdFotoCuentaUsuario, cuenta.Genero_idGenero, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando.ExecuteNonQuery();
 
                 MySqlCommand comando1 = new MySqlCommand(string.Format(
-                    "Update Correo set correo='{0}' where Cuenta_idCuenta='{1}'", correo, idCuenta), Conexion.ObtenerConexion());
+                    "Update Correo set correo='{0}' where Cuenta_idCuenta='{1}'", cuenta.Correo, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando1.ExecuteNonQuery();
 
                 MySqlCommand comando2 = new MySqlCommand(string.Format(
-                    "Update Contrasena set contrasena='{0}' where Cuenta_idCuenta='{1}'", contrasena, idCuenta), Conexion.ObtenerConexion());
+                    "Update Contrasena set contrasena='{0}' where Cuenta_idCuenta='{1}'", cuenta.Contrasena, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando2.ExecuteNonQuery();
 
                 MySqlCommand comando3 = new MySqlCommand(string.Format(
-                    "Update Telefono set telefono='{0}' where Cuenta_idCuenta='{1}'", telefono, idCuenta), Conexion.ObtenerConexion());
+                    "Update Telefono set telefono='{0}' where Cuenta_idCuenta='{1}'", cuenta.Telefono, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando3.ExecuteNonQuery();
             }
             catch(Exception e)
@@ -117,17 +154,17 @@ namespace ServiciosCuentaUsuario
             return retorno;
         }
 
-        public int RegistrarUsuario(string nombreUsuario, string correo, string contrasena, string telefono, int idFotoCuentaUsuario, int Genero_idGenero)
+        public int RegistrarUsuario(CuentaCompleta cuenta)
         {
             int retorno = 0;
             try
             {
                 MySqlCommand comando = new MySqlCommand(string.Format(
-                "Insert into Cuenta (nombreUsuario,idFotoCuentaUsuario,Genero_idGenero) values ('{0}','{1}','{2}')", nombreUsuario, idFotoCuentaUsuario, Genero_idGenero), Conexion.ObtenerConexion());
+                "Insert into Cuenta (nombreUsuario,idFotoCuentaUsuario,Genero_idGenero) values ('{0}','{1}','{2}')", cuenta.NombreUsuario, cuenta.IdFotoCuentaUsuario, cuenta.Genero_idGenero), Conexion.ObtenerConexion());
                 retorno = comando.ExecuteNonQuery();
 
                 MySqlCommand comando2 = new MySqlCommand(string.Format(
-                   "Select idCuenta from Cuenta where nombreUsuario='{0}'", nombreUsuario), Conexion.ObtenerConexion());
+                   "Select idCuenta from Cuenta where nombreUsuario='{0}'", cuenta.NombreUsuario), Conexion.ObtenerConexion());
                 MySqlDataReader reader2 = comando2.ExecuteReader();
                 while (reader2.Read())
                 {
@@ -135,15 +172,15 @@ namespace ServiciosCuentaUsuario
                 }
 
                 MySqlCommand comando3 = new MySqlCommand(string.Format(
-                    "Insert into Correo (correo,Cuenta_idCuenta) values ('{0}','{1}')", correo, idCuenta), Conexion.ObtenerConexion());
+                    "Insert into Correo (correo,Cuenta_idCuenta) values ('{0}','{1}')", cuenta.Correo, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando3.ExecuteNonQuery();
 
                 MySqlCommand comando4 = new MySqlCommand(string.Format(
-                   "Insert into Contrasena (contrasena,Cuenta_idCuenta) values ('{0}','{1}')", contrasena, idCuenta), Conexion.ObtenerConexion());
+                   "Insert into Contrasena (contrasena,Cuenta_idCuenta) values ('{0}','{1}')", cuenta.Contrasena, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando4.ExecuteNonQuery();
 
                 MySqlCommand comando5 = new MySqlCommand(string.Format(
-                  "Insert into Telefono (telefono,Cuenta_idCuenta) values ('{0}','{1}')", telefono, idCuenta), Conexion.ObtenerConexion());
+                  "Insert into Telefono (telefono,Cuenta_idCuenta) values ('{0}','{1}')", cuenta.Telefono, cuenta.IdCuenta), Conexion.ObtenerConexion());
                 retorno = comando5.ExecuteNonQuery();
             }
             catch(Exception e)

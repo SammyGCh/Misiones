@@ -12,17 +12,10 @@ namespace ServiciosCuentaUsuario.Dominio
     public class Telefono
     {
         [DataMember]
-        int idTelefono;
+        public int IdTelefono { get; set; }
         [DataMember]
-        string telefono;
+        public string Telefono { get; set; }
         [DataMember]
-        int Cuenta_idCuenta;
-
-        public Telefono(int idTelefono, string telefono, int cuenta_idCuenta)
-        {
-            this.idTelefono = idTelefono;
-            this.telefono = telefono;
-            Cuenta_idCuenta = cuenta_idCuenta;
-        }
+        public int Cuenta_idCuenta { get; set; }
     }
 }

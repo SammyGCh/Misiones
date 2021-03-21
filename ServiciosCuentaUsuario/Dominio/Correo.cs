@@ -12,17 +12,10 @@ namespace ServiciosCuentaUsuario.Dominio
     public class Correo
     {
         [DataMember]
-        int idCorreo;
+        public int IdCorreo { get; set; }
         [DataMember]
-        string correo;
+        public string Correo { get; set; }
         [DataMember]
-        int Cuenta_idCuenta;
-
-        public Correo(int idCorreo, string correo, int cuenta_idCuenta)
-        {
-            this.idCorreo = idCorreo;
-            this.correo = correo;
-            Cuenta_idCuenta = cuenta_idCuenta;
-        }
+        public int Cuenta_idCuenta { get; set; }
     }
 }

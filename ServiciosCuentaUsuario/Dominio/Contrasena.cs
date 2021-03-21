@@ -11,17 +11,10 @@ namespace ServiciosCuentaUsuario.Dominio
     public class Contrasena
     {
         [DataMember]
-        int idContrasena;
+        public int IdContrasena { get; set; }
         [DataMember]
-        string contrasena;
+        public string contrasena { get; set; }
         [DataMember]
-        int Cuenta_idCuenta;
-
-        public Contrasena(int idContrasena, string contrasena, int cuenta_idCuenta)
-        {
-            this.idContrasena = idContrasena;
-            this.contrasena = contrasena;
-            Cuenta_idCuenta = cuenta_idCuenta;
-        }
+        public int Cuenta_idCuenta { get; set; }
     }
 }

@@ -11,15 +11,8 @@ namespace ServiciosCuentaUsuario.Dominio
     public class Genero
     {
         [DataMember]
-        int idGenero;
+        public int IdGenero { get; set; }
         [DataMember]
-        string genero;
-
-        public Genero(int idGenero, string genero)
-        {
-            this.idGenero = idGenero;
-            this.genero = genero;
-           
-        }
+        public string genero { get; set; }
     }
 }

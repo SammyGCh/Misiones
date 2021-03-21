@@ -13,44 +13,12 @@ namespace ServiciosCuentaUsuario.Dominio
     public class Cuenta
     {
         [DataMember]
-        int idCuenta;
+        public int IdCuenta { get; set; }
         [DataMember]
-        string nombreUsuario;
+        public string NombreUsuario { get; set; }
         [DataMember]
-        int idFotoCuentaUsuario;
+        public int IdFotoCuentaUsuario { get; set; }
         [DataMember]
-        int Genero_idGenero;
-
-        public int getIdCuenta()
-        {
-            return idCuenta;
-        }
-
-        public string getNombreUsuario()
-        {
-            return nombreUsuario;
-        }
-        public int getIdFotoCuentaUsuario()
-        {
-            return idFotoCuentaUsuario;
-        }
-        public int getGenero_idGenero()
-        {
-            return Genero_idGenero;
-        }
-        public Cuenta(int idCuenta, string nombreUsuario, int idFotoCuentaUsuario, int genero_idGenero)
-        {
-            this.idCuenta = idCuenta;
-            this.nombreUsuario = nombreUsuario;
-            this.idFotoCuentaUsuario = idFotoCuentaUsuario;
-            Genero_idGenero = genero_idGenero;
-        }
-        
-        public Cuenta(int idCuenta, string nombreUsuario, int genero_idGenero)
-        {
-            this.idCuenta = idCuenta;
-            this.nombreUsuario = nombreUsuario;
-            Genero_idGenero = genero_idGenero;
-        }
+        public int Genero_idGenero { get; set; }
     }
 }
